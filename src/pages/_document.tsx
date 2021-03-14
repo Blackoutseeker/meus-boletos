@@ -36,8 +36,7 @@ export default class MyDocument extends Document {
     }
   }
 
-  // eslint-disable-next-line no-undef
-  render(): JSX.Element {
+  render() {
     return (
       <Html lang="pt-BR">
         <Head>
