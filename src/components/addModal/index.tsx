@@ -12,6 +12,7 @@ import {
   Input,
   HideInput,
   FileInput,
+  ButtonContent,
   AddButton,
   AddButtonText
 } from './style'
@@ -168,22 +169,24 @@ const AddModal: FC<IProps> = props => {
                 handleTextChange(target.value, 'validity')
               }}
             />
-            <AddButton onClick={!uploading ? upload : () => {}}>
-              <AddButtonText>
-                {uploading ? (
-                  <CircularProgressbar
-                    styles={{
-                      root: { width: 25, paddingTop: 5 },
-                      path: { stroke: '#fff' }
-                    }}
-                    strokeWidth={12}
-                    value={percentage}
-                  />
-                ) : (
-                  'Adicionar'
-                )}
-              </AddButtonText>
-            </AddButton>
+            <ButtonContent>
+              <AddButton onClick={!uploading ? upload : () => {}}>
+                <AddButtonText>
+                  {uploading ? (
+                    <CircularProgressbar
+                      styles={{
+                        root: { width: 25, paddingTop: 5 },
+                        path: { stroke: '#fff' }
+                      }}
+                      strokeWidth={12}
+                      value={percentage}
+                    />
+                  ) : (
+                    'Adicionar'
+                  )}
+                </AddButtonText>
+              </AddButton>
+            </ButtonContent>
           </AddModalContent>
         </OutsideClickHandler>
       </ModalHolder>

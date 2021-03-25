@@ -12,6 +12,14 @@ export const AddModalContent = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 630px) {
+    min-width: 380px;
+    margin: 20px;
+  }
+  @media screen and (max-width: 460px) {
+    min-width: 100px;
+    margin: 20px;
+  }
 `
 
 export const AddText = styled.span`
@@ -48,10 +56,18 @@ export const FileInput = styled(Input)`
   ${(props: { isDragActive: boolean }) => props.isDragActive && dragActive}
 `
 
+export const ButtonContent = styled.div`
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`
+
 export const AddButton = styled.button`
   outline: none;
   border: none;
-  transform: translateX(330px);
   width: 180px;
   height: 50px;
   background-color: transparent;
@@ -59,7 +75,6 @@ export const AddButton = styled.button`
   place-items: center;
   border: 3px solid ${({ theme }) => theme.colors.green};
   border-radius: 10px;
-  margin-top: 20px;
   cursor: pointer;
   :hover {
     background-color: ${({ theme }) => theme.colors.green};

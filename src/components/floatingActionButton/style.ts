@@ -14,7 +14,14 @@ export const ActionButton = styled.button`
   place-items: center;
   border-radius: 100%;
   cursor: pointer;
-  :hover {
-    background-color: ${({ theme }) => theme.colors.green};
+  @media screen and (min-width: 380px) {
+    :hover {
+      background-color: ${({ theme }) => theme.colors.green};
+    }
   }
+`
+
+export const Icon = styled.img`
+  width: 20px;
+  height: 20px;
 `
