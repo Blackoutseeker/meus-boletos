@@ -1,7 +1,7 @@
 import { FC, useCallback, memo } from 'react'
 import { useSelector } from 'react-redux'
 import { IStore } from '../../store'
-import { ActionButton } from './style'
+import { ActionButton, Icon } from './style'
 import Plus from '../../assets/images/plus.svg'
 
 interface IProps {
@@ -19,7 +19,7 @@ const FloatingActionButton: FC<IProps> = props => {
 
   return (
     <ActionButton onClick={handleClick}>
-      <img src={Plus} height={20} />
+      <Icon src={Plus} alt={'Add'} />
     </ActionButton>
   )
 }

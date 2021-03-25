@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const ItemContent = styled.div`
-  max-width: 800px;
+  width: 60%;
   height: 70px;
   background-color: ${({ theme }) => theme.colors.primary};
   box-shadow: ${({ theme }) => theme.shadow};
@@ -12,6 +12,9 @@ export const ItemContent = styled.div`
   flex-direction: row;
   padding-left: 20px;
   margin-bottom: 20px;
+  @media screen and (max-width: 600px) {
+    width: 80%;
+  }
 `
 
 export const InfoContent = styled.div`
@@ -20,13 +23,14 @@ export const InfoContent = styled.div`
   align-items: flex-start;
   flex-direction: column;
   width: 100%;
+  min-width: calc(100% - 150px);
   height: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
 `
 
 export const TitleContent = styled.div`
-  width: 640px;
+  width: 100%;
   height: 70%;
   display: inline-block;
   overflow-x: auto;
@@ -41,7 +45,19 @@ export const TitleContent = styled.div`
 `
 
 export const ValidityContent = styled.div`
-  height: 30%;
+  width: 100%;
+  height: 40%;
+  display: inline-block;
+  overflow-y: hidden;
+  overflow-x: auto;
+  ::-webkit-scrollbar {
+    height: 4px;
+    background-color: ${({ theme }) => theme.colors.accent};
+  }
+  ::-webkit-scrollbar-thumb {
+    height: 4px;
+    background-color: ${({ theme }) => theme.colors.red};
+  }
 `
 
 export const TitleText = styled.span`
@@ -53,6 +69,12 @@ export const TitleText = styled.span`
 export const ValidityText = styled.span`
   color: ${({ theme }) => theme.colors.greyText};
   font-size: 16px;
+  white-space: nowrap;
+`
+
+export const Icons = styled.img`
+  width: 25px;
+  height: 25px;
 `
 
 const Button = styled.button`
@@ -67,8 +89,10 @@ const Button = styled.button`
 
 export const DownloadContent = styled(Button)`
   width: 70px;
-  :hover {
-    background-color: ${({ theme }) => theme.colors.blue};
+  @media screen and (min-width: 380px) {
+    :hover {
+      background-color: ${({ theme }) => theme.colors.blue};
+    }
   }
 `
 
@@ -76,7 +100,9 @@ export const DeleteButton = styled(Button)`
   width: 90px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  :hover {
-    background-color: ${({ theme }) => theme.colors.red};
+  @media screen and (min-width: 380px) {
+    :hover {
+      background-color: ${({ theme }) => theme.colors.red};
+    }
   }
 `

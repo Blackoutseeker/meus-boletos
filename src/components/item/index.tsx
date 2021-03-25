@@ -10,6 +10,7 @@ import {
   ValidityContent,
   TitleText,
   ValidityText,
+  Icons,
   DownloadContent,
   DeleteButton
 } from './style'
@@ -57,11 +58,11 @@ const Item: FC<IProps> = props => {
         </InfoContent>
         <a href={downloadUrl} target={'_blank'} rel={'noreferrer'}>
           <DownloadContent>
-            <img src={FileDownload} height={25} />
+            <Icons src={FileDownload} alt={'Download'} />
           </DownloadContent>
         </a>
         <DeleteButton onClick={deleteItem}>
-          <img src={Trash} height={25} />
+          <Icons src={Trash} alt={'Delete'} />
         </DeleteButton>
       </ItemContent>
     </>

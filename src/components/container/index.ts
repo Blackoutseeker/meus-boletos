@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 const Container = styled.main`
-  position: absolute;
   top: 0px;
   left: 0px;
   width: 100%;
@@ -12,12 +11,18 @@ const Container = styled.main`
   padding-top: 20px;
   overflow-y: auto;
   z-index: 0;
-  ::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.accent};
+  @media screen and (max-width: 600px) {
+    padding-bottom: 75px;
   }
-  ::-webkit-scrollbar {
-    width: 15px;
-    background-color: ${({ theme }) => theme.colors.primary};
+  @media screen and (min-width: 761px) {
+    position: absolute;
+    ::-webkit-scrollbar-thumb {
+      background-color: ${({ theme }) => theme.colors.accent};
+    }
+    ::-webkit-scrollbar {
+      width: 15px;
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `
 

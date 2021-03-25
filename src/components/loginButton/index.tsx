@@ -1,8 +1,8 @@
-import { FC, memo, useCallback } from 'react'
+import { FC, memo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ILoginAction } from '../../store/reducers/login'
 import { IStore } from '../../store'
-import { LoginContent, LoginText, LoggedContent } from './style'
+import { LoginContent, LoginText, LoggedContent, Icon } from './style'
 import User from '../../assets/images/user.svg'
 import firebase from '../../services/firebase'
 
@@ -14,6 +14,18 @@ const LoginButton: FC<IProps> = props => {
   const { setLoginModal } = props
   const dispatch = useDispatch()
   const isLogged: boolean = useSelector((state: IStore) => state.isLogged)
+
+  const loadUser = useCallback((): string | null => {
+    const logged = localStorage.getItem('isLogged')
+    return logged
+  }, [])
+
+  useEffect(() => {
+    const logged = loadUser()
+    if (logged) {
+      dispatch<ILoginAction>({ type: 'LOGIN' })
+    }
+  }, [loadUser, dispatch])
 
   const handleLogout = useCallback(async (): Promise<void> => {
     await firebase
@@ -31,14 +43,14 @@ const LoginButton: FC<IProps> = props => {
   if (isLogged) {
     return (
       <LoggedContent onClick={handleLogout}>
-        <img src={User} height={20} />
+        <Icon src={User} alt={'User'} />
       </LoggedContent>
     )
   } else {
     return (
       <LoginContent onClick={handleLogin}>
         <LoginText>Entrar</LoginText>
-        <img src={User} height={20} />
+        <Icon src={User} alt={'User'} />
       </LoginContent>
     )
   }

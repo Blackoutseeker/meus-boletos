@@ -7,6 +7,7 @@ import {
   LoginModalContent,
   LoginText,
   TextInput,
+  ButtonContent,
   LoginButton,
   LoginButtonText,
   ErrorMessage
@@ -93,9 +94,11 @@ const LoginModal: FC<IProps> = props => {
             {error ? (
               <ErrorMessage>* Você não deve usar este site...</ErrorMessage>
             ) : null}
-            <LoginButton onClick={handleLogin}>
-              <LoginButtonText>Logar</LoginButtonText>
-            </LoginButton>
+            <ButtonContent>
+              <LoginButton onClick={handleLogin}>
+                <LoginButtonText>Logar</LoginButtonText>
+              </LoginButton>
+            </ButtonContent>
           </LoginModalContent>
         </OutsideClickHandler>
       </ModalHolder>
