@@ -1,66 +1,92 @@
-import { FC } from 'react'
 import { GetStaticProps } from 'next'
+import { FC, useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { IItem } from '../database/interfaces'
+import { IItemReducer, IItemsAction } from '../store/reducers/items'
 import Head from 'next/head'
-import faker from 'faker'
-import { ICard } from '@components/homepage/card'
-import MainContainer from '@components/mainContainer'
-import Header from '@components/header'
-import PageContainer from '@components/pageContainer'
-import Slider from '@components/homepage/slider'
-import Section from '@components/homepage/section'
-import Footer from '@components/footer'
-import Conjunto from '@assets/images/Conjunto.png'
+import Container from '../components/container'
+import Item from '../components/item'
+import LoginButton from '../components/loginButton'
+import FloatingActionButton from '../components/floatingActionButton'
+import LoginModal from '../components/loginModal'
+import AddModal from '../components/addModal'
+import ZeroData from '../components/zeroData'
+import firebase from '../services/firebase'
 
 interface IProps {
-  cards: ICard[]
+  getData: IItem[]
 }
 
-const Home: FC<IProps> = props => {
-  const { cards } = props
+const Home: FC<IProps> = ({ getData }) => {
+  const dispatch = useDispatch()
+  const items = useSelector((state: IItemReducer) => state.items)
+  const [loginModal, setLoginModal] = useState<boolean>(false)
+  const [addModal, setAddModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    dispatch<IItemsAction>({
+      type: 'ADD_MULTI',
+      payload: { itemsList: getData }
+    })
+  }, [getData, dispatch])
+
   return (
-    <MainContainer>
+    <Container>
       <Head>
-        <title>Homepage - Presente da Cegonha</title>
-        <meta
-          name="keywords"
-          content="Presente, Cegonha, Presente da Cegonha, Homepage"
-        />
-        <meta
-          name="description"
-          content="Confira roupas, enxoval, calçados e brinquedos em nossa homepage!"
-        />
-        <link rel="icon" href="/favicon.svg" />
+        <title>Meus Boletos</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Header />
-      <PageContainer>
-        <Slider />
-        <Section sectionTitle={'Roupas'} cards={cards} />
-        <Section sectionTitle={'Enxoval'} cards={cards} />
-      </PageContainer>
-      <Footer />
-    </MainContainer>
+      <LoginButton setLoginModal={setLoginModal} />
+      <FloatingActionButton
+        setAddModal={setAddModal}
+        setLoginModal={setLoginModal}
+      />
+      <LoginModal loginModal={loginModal} setLoginModal={setLoginModal} />
+      <AddModal addModal={addModal} setAddModal={setAddModal} />
+      {items?.length <= 0 ? (
+        <ZeroData>Nenhum boleto disponível para download</ZeroData>
+      ) : (
+        items.map((item: IItem) => {
+          return (
+            <Item
+              key={item.id}
+              title={item.title}
+              downloadUrl={item.downloadUrl}
+              validity={item.validity}
+              fileName={item.fileName}
+              id={item.id}
+              setLoginModal={setLoginModal}
+            />
+          )
+        })
+      )}
+    </Container>
   )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const cards: ICard[] = []
-
-  for (let i = 0; i < 5; i++) {
-    const generatePrice = faker.commerce
-      .price(100, 300, 2, 'R$ ')
-      .replace('.', ',')
-    cards.push({
-      imageUrl: Conjunto,
-      price: generatePrice,
-      productName: 'Conjunto Kids'
+  const getData: IItem[] = []
+  await firebase
+    .database()
+    .ref('/')
+    .once('value', snapshot => {
+      if (snapshot.hasChildren()) {
+        snapshot.forEach(snapshotchild => {
+          getData.push({
+            title: snapshotchild.val().title,
+            validity: snapshotchild.val().validity,
+            downloadUrl: snapshotchild.val().downloadUrl,
+            fileName: snapshotchild.val().fileName,
+            id: snapshotchild.val().id
+          })
+        })
+      }
     })
-  }
-
   return {
     props: {
-      cards: cards
+      getData: getData
     },
-    revalidate: 15
+    revalidate: 20
   }
 }
 

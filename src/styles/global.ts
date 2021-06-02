@@ -6,6 +6,7 @@ export default createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
+    transition: 0.2s;
   }
   body {
     background-color: ${({ theme }) => theme.colors.background};
