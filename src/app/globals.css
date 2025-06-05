@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-dark-100: #353535;
+  --color-dark-200: #333333;
+  --color-dark-300: #2e2e2e;
+  --color-dark-400: #2c2c2c;
+  --color-dark-500: #272727;
+  --color-dark-600: #252525;
+  --color-dark-700: #222222;
+  --color-dark-800: #1e1e1e;
+  --color-dark-900: #121212;
+}
+
+* {
+  @apply m-0 box-border p-0;
+}
+
+body {
+  @apply bg-dark-900 text-white;
+}
