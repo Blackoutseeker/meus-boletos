@@ -1,7 +1,6 @@
-const withImages = require('next-images')
+import type { NextConfig } from 'next'
 
-module.exports = withImages({
-  esModule: true,
+const nextConfig: NextConfig = {
   env: {
     API_KEY: process.env.API_KEY,
     AUTH_DOMAIN: process.env.AUTH_DOMAIN,
@@ -11,4 +10,6 @@ module.exports = withImages({
     MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
     APP_ID: process.env.APP_ID
   }
-})
+}
+
+export default nextConfig
