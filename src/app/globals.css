@@ -13,10 +13,6 @@
   --color-dark-900: #121212;
 }
 
-* {
-  @apply m-0 box-border p-0;
-}
-
 body {
   @apply bg-dark-900 text-white;
 }
