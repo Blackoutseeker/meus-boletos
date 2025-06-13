@@ -5,3 +5,7 @@ export type Document = {
   downloadUrl?: string
   password?: string
 }
+
+export type LocalDocument = Document & {
+  fileName: string
+}
