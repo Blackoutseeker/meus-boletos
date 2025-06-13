@@ -1,24 +1,22 @@
-const INITIAL_STATE: boolean = false
+import { createSlice } from '@reduxjs/toolkit'
 
-export interface ILoginReducer {
-  isLogged: boolean
+export type LoginState = {
+  isLoggedIn: boolean
 }
 
-export interface ILoginAction {
-  type: 'LOGIN' | 'LOGOUT'
+const initialState: LoginState = {
+  isLoggedIn: false
 }
 
-const LoginReducer = (state: boolean = INITIAL_STATE, action: ILoginAction) => {
-  switch (action.type) {
-    case 'LOGIN':
-      localStorage.setItem('isLogged', 'true')
-      return true
-    case 'LOGOUT':
-      localStorage.removeItem('isLogged')
-      return false
-    default:
-      return state
+export const loginSlice = createSlice({
+  name: 'login',
+  initialState,
+  reducers: {
+    changeState: state => {
+      state.isLoggedIn = !state.isLoggedIn
+    }
   }
-}
+})
 
-export default LoginReducer
+export const { changeState } = loginSlice.actions
+export const loginReducer = loginSlice.reducer
