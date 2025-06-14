@@ -6,7 +6,7 @@ import type { AppStore } from '@/src/store'
 import { store } from '@/src/store'
 import { Provider } from 'react-redux'
 
-const StoreProvider = ({ children }: { children: ReactNode[] }) => {
+const StoreProvider = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const storeRef = useRef<AppStore | null>(null)
 
   if (!storeRef.current) {
