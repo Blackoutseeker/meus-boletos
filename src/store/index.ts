@@ -1,16 +1,14 @@
-import { createStore, combineReducers } from 'redux'
-import LoginReducer from './reducers/login'
-import ItemsReducer from './reducers/items'
-import { IItem } from '../database/interfaces'
+import { configureStore } from '@reduxjs/toolkit'
+import { loginReducer } from './reducers/login'
+import { documentReducer } from './reducers/document'
 
-export interface IStore {
-  isLogged: boolean
-  items: IItem[]
-}
-
-const rootReducer = combineReducers<IStore>({
-  isLogged: LoginReducer,
-  items: ItemsReducer
+export const store = configureStore({
+  reducer: {
+    loginReducer,
+    documentReducer
+  }
 })
 
-export const store = createStore(rootReducer)
+export type AppStore = typeof store
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
