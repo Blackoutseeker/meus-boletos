@@ -7,7 +7,7 @@ export declare global {
       FIREBASE_PROJECT_ID: string
       FIREBASE_STORAGE_BUCKET: string
       FIREBASE_MESSAGING_SENDER_ID: string
-      FIREBASE_APP_ID: String
+      FIREBASE_APP_ID: string
 
       AUTH_PASSWORD: string
     }
