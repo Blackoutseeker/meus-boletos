@@ -1,28 +1,21 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
-import 'firebase/storage'
+import type { FirebaseOptions, FirebaseApp } from 'firebase/app'
+import { initializeApp } from 'firebase/app'
+import type { Database } from 'firebase/database'
+import { getDatabase } from 'firebase/database'
+import type { FirebaseStorage } from 'firebase/storage'
+import { getStorage } from 'firebase/storage'
 
-interface IFirebaseConfig {
-  apiKey: string
-  authDomain: string
-  databaseURL: string
-  projectId: string
-  storageBucket: string
-  messagingSenderId: string
-  appId: string
+const firebaseConfig: FirebaseOptions = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
 }
 
-const firebaseConfig: IFirebaseConfig = {
-  apiKey: process.env.API_KEY!,
-  authDomain: process.env.AUTH_DOMAIN!,
-  databaseURL: process.env.DATABASE_URL!,
-  projectId: process.env.PROJECT_ID!,
-  storageBucket: process.env.STORAGE_BUCKET!,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID!,
-  appId: process.env.APP_ID!
-}
+const app: FirebaseApp = initializeApp(firebaseConfig)
 
-export default !firebase.apps.length
-  ? firebase.initializeApp(firebaseConfig)
-  : firebase.app()
+export const database: Database = getDatabase(app)
+export const storage: FirebaseStorage = getStorage(app)
