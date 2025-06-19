@@ -10,6 +10,8 @@ export declare global {
       FIREBASE_APP_ID: string
 
       AUTH_PASSWORD: string
+
+      BEARER_TOKEN: string
     }
   }
 }
