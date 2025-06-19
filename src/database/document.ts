@@ -12,6 +12,7 @@ export const getDocuments = async (): Promise<Document[]> => {
       const document = snapshot[key] as Document
       document.id = key
       delete document.password
+      delete document.downloadUrl
       documents.push(document)
     })
   }
