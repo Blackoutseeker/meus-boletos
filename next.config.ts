@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
 
-    AUTH_PASSWORD: process.env.AUTH_PASSWORD
+    AUTH_PASSWORD: process.env.AUTH_PASSWORD,
+
+    BEARER_TOKEN: process.env.BEARER_TOKEN
   }
 }
 
