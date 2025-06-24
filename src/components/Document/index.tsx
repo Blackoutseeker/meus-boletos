@@ -25,7 +25,7 @@ const DocumentCard: FC<DocumentCardProps> = ({ document }) => {
           <HiDownload size={24} />
         </button>
         {isAuthenticated && (
-          <button className="flex w-full cursor-pointer items-center justify-center space-x-5 rounded-md bg-red-800 px-4 py-3 duration-150 hover:bg-red-700">
+          <button className="flex w-fit cursor-pointer items-center justify-center space-x-5 rounded-md bg-red-800 px-4 py-3 duration-150 hover:bg-red-700">
             <FaTrash size={16} />
           </button>
         )}
