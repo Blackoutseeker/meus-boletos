@@ -1,6 +1,6 @@
 import type { Document } from '@/src/models/document'
 import { database } from '@/src/utils/firebase'
-import { ref, get } from 'firebase/database'
+import { ref, get, push } from 'firebase/database'
 
 export const getDocuments = async (): Promise<Document[]> => {
   const documents: Document[] = []
@@ -18,4 +18,25 @@ export const getDocuments = async (): Promise<Document[]> => {
   }
 
   return documents
+}
+
+export const pushDocument = async (
+  title: string,
+  password: string,
+  downloadUrl: string,
+  expirationDate?: string
+): Promise<string> => {
+  const documentsRef = ref(database, 'documents')
+  const document = {
+    title,
+    password,
+    downloadUrl,
+    expirationDate
+  }
+
+  if (!expirationDate) {
+    delete document.expirationDate
+  }
+
+  return push(documentsRef, document).key
 }
