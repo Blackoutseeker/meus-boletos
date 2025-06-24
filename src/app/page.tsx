@@ -6,6 +6,8 @@ import Header from '../components/Header'
 import DocumentList from '../components/DocumentList'
 import Footer from '../components/Footer'
 
+export const revalidate = 10
+
 const Home: NextPage = async () => {
   const initialDocuments: Document[] = await getDocuments()
 
