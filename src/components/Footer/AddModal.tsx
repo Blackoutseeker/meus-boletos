@@ -1,10 +1,13 @@
 'use client'
 
-import type { FC } from 'react'
-import { useRef, useState, useCallback, useEffect } from 'react'
+import type { FC, FormEvent } from 'react'
+import { useRef, useState, useCallback, useEffect, memo, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useAppDispatch } from '@/src/hooks/redux'
+import { addDocument } from '@/src/store/reducers/document'
 import { expirationDateRegex } from '@/src/utils/regex'
 import { HiUpload } from 'react-icons/hi'
+import type { DropzoneRootProps, DropzoneInputProps } from 'react-dropzone'
 
 interface AddModalProps {
   onClose: () => void
@@ -17,6 +20,7 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
   const [name, setName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [expirationDate, setExpirationDate] = useState<string>('')
+  const [uploading, setUploading] = useState<boolean>(false)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -24,6 +28,42 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
   }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+  const dispatch = useAppDispatch()
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+
+    setUploading(true)
+    let expirationDateFormatted: string = expirationDate
+    if (expirationDate) {
+      expirationDateFormatted = expirationDate.replace(/-/g, '/')
+      const [year, month, day] = expirationDateFormatted.split('/')
+      expirationDateFormatted = `${day}/${month}/${year}`
+    }
+
+    const formData: FormData = new FormData()
+    formData.append('title', name)
+    formData.append('password', password)
+    formData.append('expirationDate', expirationDateFormatted)
+    if (file) {
+      formData.append('file', file)
+    }
+
+    const response = await fetch('/api/documents', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${process.env.BEARER_TOKEN}`
+      }
+    })
+
+    if (response.status === 200) {
+      const { document } = await response.json()
+      dispatch(addDocument(document))
+      onClose()
+    }
+  }
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -55,17 +95,25 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
     }
   }, [onClose])
 
+  const isDisabled: boolean =
+    !file || name.length <= 0 || password.length < 4 || uploading
+
   return (
     <dialog
       ref={dialogRef}
       className="fixed flex min-h-screen min-w-screen items-center justify-center bg-black/70 px-5 text-white"
     >
-      <form className="bg-dark-800 flex w-96 flex-col items-center justify-center space-y-5 rounded-lg p-5">
+      <form
+        className="bg-dark-800 flex w-96 flex-col items-center justify-center space-y-5 rounded-lg p-5"
+        onSubmit={submit}
+      >
         <h2 className="text-xl font-bold">Adicionar documento</h2>
         {file && (
-          <div className="border-dark-100 flex w-full justify-center rounded-md border border-dashed p-5">
-            <iframe src={URL.createObjectURL(file)} width={140} height={200} />
-          </div>
+          <DocumentPreview
+            file={file}
+            getRootProps={getRootProps}
+            getInputProps={getInputProps}
+          />
         )}
         {!file && (
           <div
@@ -76,7 +124,8 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
               type="file"
               required
               {...getInputProps({
-                accept: '.pdf'
+                accept: '.pdf',
+                multiple: false
               })}
             />
             {isDragActive ? (
@@ -100,6 +149,7 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
           className="border-dark-100 w-full rounded-md border p-3"
           type="text"
           placeholder="Senha*"
+          minLength={4}
           value={password}
           onChange={event => {
             setPassword(event.target.value)
@@ -117,15 +167,57 @@ const AddModal: FC<AddModalProps> = ({ onClose }) => {
         />
         <button
           type="submit"
-          className="disabled:bg-dark-100 flex w-full cursor-pointer items-center justify-center space-x-5 rounded-md bg-green-500 p-3 text-lg font-bold text-black duration-150 hover:bg-green-400 disabled:cursor-default disabled:text-white/25"
-          disabled={false}
+          className={`disabled:bg-dark-100 flex w-full cursor-pointer items-center justify-center space-x-5 rounded-md bg-green-500 p-3 text-lg font-bold text-black duration-150 hover:bg-green-400 disabled:cursor-default disabled:text-white/25 ${uploading ? 'animate-pulse' : ''}`}
+          disabled={isDisabled}
         >
-          <span>Adicionar</span>
-          <HiUpload size={20} />
+          {uploading && <span>Enviando...</span>}
+          {!uploading && (
+            <>
+              <span>Adicionar</span>
+              <HiUpload size={20} />
+            </>
+          )}
         </button>
       </form>
     </dialog>
   )
 }
+
+const DocumentPreview = memo(
+  ({
+    file,
+    getRootProps,
+    getInputProps
+  }: {
+    file: File
+    getRootProps: <T extends DropzoneRootProps>(props?: T) => T
+    getInputProps: <T extends DropzoneInputProps>(props?: T) => T
+  }) => {
+    const fileUrl: string = useMemo(() => URL.createObjectURL(file), [file])
+
+    return (
+      <div
+        className="border-dark-100 relative flex w-full cursor-pointer justify-center rounded-md border border-dashed p-5"
+        {...getRootProps()}
+      >
+        <input
+          type="file"
+          {...getInputProps({
+            accept: '.pdf',
+            multiple: false
+          })}
+        />
+        <iframe
+          className="pointer-events-none overflow-hidden"
+          src={fileUrl}
+          width={140}
+          height={200}
+          tabIndex={-1}
+        />
+        <div className="absolute inset-0 z-10" aria-hidden="true" />
+      </div>
+    )
+  }
+)
 
 export default AddModal
