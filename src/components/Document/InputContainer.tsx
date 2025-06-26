@@ -3,10 +3,11 @@
 import type { FC, FormEvent } from 'react'
 import type { Document } from '@/src/models/document'
 import { useAppSelector } from '@/src/hooks/redux'
-import { HiDownload } from 'react-icons/hi'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { FaTrash } from 'react-icons/fa'
-import { useRef, useState, useCallback, useEffect } from 'react'
+import DeleteModal from './DeleteModal'
 import { useClickOutside } from '@/src/hooks/clickOutside'
+import { HiDownload } from 'react-icons/hi'
 import Link from 'next/link'
 
 interface InputContainerProps {
@@ -16,13 +17,27 @@ interface InputContainerProps {
 const InputContainer: FC<InputContainerProps> = ({ document }) => {
   const isAuthenticated = useAppSelector(state => state.loginReducer.isLoggedIn)
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+
+  const changeDeleteModalState = () => {
+    setIsDeleteModalOpen(!isDeleteModalOpen)
+  }
+
   return (
     <>
       <SwitchInput document={document} />
       {isAuthenticated && (
-        <button className="flex w-fit cursor-pointer items-center justify-center space-x-5 rounded-md bg-red-800 px-4 py-3 duration-150 hover:bg-red-700">
-          <FaTrash size={16} />
-        </button>
+        <>
+          <button
+            className="flex w-fit cursor-pointer items-center justify-center space-x-5 rounded-md bg-red-800 px-4 py-3 duration-150 hover:bg-red-700"
+            onClick={changeDeleteModalState}
+          >
+            <FaTrash size={16} />
+          </button>
+          {isDeleteModalOpen && (
+            <DeleteModal document={document} onClose={changeDeleteModalState} />
+          )}
+        </>
       )}
     </>
   )
