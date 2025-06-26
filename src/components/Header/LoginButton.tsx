@@ -1,13 +1,16 @@
 'use client'
 
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/src/hooks/redux'
 import { loginSlice } from '@/src/store/reducers/login'
+import { useClickOutside } from '@/src/hooks/clickOutside'
 import { FaUser } from 'react-icons/fa6'
 import { MdLogout } from 'react-icons/md'
 
 const LoginButton: FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const [isTryingToLogin, setIsTryingToLogin] = useState<boolean>(false)
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<boolean>(false)
@@ -15,6 +18,14 @@ const LoginButton: FC = () => {
   const { isLoggedIn } = useAppSelector(state => state.loginReducer)
   const dispatch = useAppDispatch()
   const { changeState } = loginSlice.actions
+
+  const closeInput = () => {
+    setIsTryingToLogin(false)
+    setPassword('')
+    setError(false)
+  }
+
+  useClickOutside(inputRef, closeInput)
 
   const changeIsTryingToLoginState = () => {
     setIsTryingToLogin(!isTryingToLogin)
@@ -47,6 +58,7 @@ const LoginButton: FC = () => {
     return (
       <div className="flex flex-col space-y-3">
         <input
+          ref={inputRef}
           autoFocus
           type="password"
           placeholder="Senha"
@@ -60,7 +72,7 @@ const LoginButton: FC = () => {
           }}
         />
         {error && (
-          <span className="text-sm text-red-500">
+          <span className="text-sm text-red-400">
             Senha incorreta. Tente novamente.
           </span>
         )}
