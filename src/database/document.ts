@@ -40,3 +40,17 @@ export const pushDocument = async (
 
   return push(documentsRef, document).key
 }
+
+export const getDocumentDownloadUrl = async (
+  id: string,
+  password: string
+): Promise<string | null> => {
+  const documentReference = ref(database, `documents/${id}`)
+  const document = (await get(documentReference)).val() as Document
+
+  if (password === document.password) {
+    return document.downloadUrl!
+  }
+
+  return null
+}
