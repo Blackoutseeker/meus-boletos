@@ -1,6 +1,6 @@
 import type { Document } from '@/src/models/document'
 import { database } from '@/src/utils/firebase'
-import { ref, get, push } from 'firebase/database'
+import { ref, get, push, remove } from 'firebase/database'
 
 export const getDocuments = async (): Promise<Document[]> => {
   const documents: Document[] = []
@@ -53,4 +53,14 @@ export const getDocumentDownloadUrl = async (
   }
 
   return null
+}
+
+export const deleteDocument = async (id: string): Promise<string> => {
+  const documentReference = ref(database, `documents/${id}`)
+  const document = (await get(documentReference)).val() as Document
+  const downloadUrl: string = document.downloadUrl!
+
+  await remove(documentReference)
+
+  return downloadUrl
 }
