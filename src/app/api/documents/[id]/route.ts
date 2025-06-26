@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { documentBadIdRegex } from '@/src/utils/regex'
-import { getDocumentDownloadUrl } from '@/src/database/document'
+import {
+  getDocumentDownloadUrl,
+  deleteDocument as deleteDocumentFromDatabase
+} from '@/src/database/document'
+import { extractDocumentIdFromUrl } from '@/src/utils/format'
+import { deleteDocument as deleteDocumentFromStorage } from '@/src/storage/document'
 
 export const POST = async (
   request: NextRequest,
@@ -47,6 +52,46 @@ export const POST = async (
     }
 
     return NextResponse.json({ message: 'Wrong password' }, { status: 401 })
+  } catch (error) {
+    return NextResponse.json({ message: `${error}` }, { status: 500 })
+  }
+}
+
+export const DELETE = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  const bearerToken: string = process.env.BEARER_TOKEN
+  const authorization: string | null = request.headers.get('Authorization')
+
+  if (!authorization) {
+    return NextResponse.json(
+      { message: 'Missing Authorization' },
+      { status: 403 }
+    )
+  }
+
+  if (authorization !== `Bearer ${bearerToken}`) {
+    return NextResponse.json({ message: 'Not allowed' }, { status: 403 })
+  }
+
+  const { id } = await params
+
+  if (!id || typeof id !== 'string' || documentBadIdRegex.test(id)) {
+    return NextResponse.json(
+      { message: 'Invalid document ID' },
+      { status: 400 }
+    )
+  }
+  try {
+    const downloadUrl: string = await deleteDocumentFromDatabase(id)
+    const documentId: string = extractDocumentIdFromUrl(downloadUrl)!
+    await deleteDocumentFromStorage(documentId)
+
+    return NextResponse.json(
+      { message: 'Document deleted successfully' },
+      { status: 200 }
+    )
   } catch (error) {
     return NextResponse.json({ message: `${error}` }, { status: 500 })
   }
